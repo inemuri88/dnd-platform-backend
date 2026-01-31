@@ -8,12 +8,13 @@ import it.dnd.game_elements_service.entity.enumerate.WeaponCategory;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Objects;
+
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-@ToString
 @Builder
 public class Item extends CreationUpdate {
 
@@ -65,4 +66,17 @@ public class Item extends CreationUpdate {
 
     @Column(columnDefinition = "TEXT", nullable = false)
     private String description;
+
+    @Override
+    public boolean equals(Object o){
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Item item = (Item) o;
+        return id!=null && Objects.equals(this.id, item.id) && Objects.equals(this.name, item.name);
+    }
+
+    @Override
+    public int hashCode(){
+        return Objects.hash(id, name);
+    }
 }
