@@ -8,7 +8,7 @@ public enum AbilityScore {
     WISDOM ("WIS"),
     CHARISMA ("CHA");
 
-    private String ability;
+    private final String ability;
 
     AbilityScore(String ability) {
         this.ability = ability;
