@@ -1,12 +1,12 @@
 package it.dnd.game_elements_service.entity.enumerate;
 
 public enum AbilityScore {
-    Strength ("STR"),
-    Dexterity ("DEX"),
-    Constitution ("CON"),
-    Intelligence ("INT"),
-    Wisdom ("WIS"),
-    Charisma ("CHA");
+    STRENGTH ("STR"),
+    DEXTERITY ("DEX"),
+    CONSTITUTION ("CON"),
+    INTELLIGENCE ("INT"),
+    WISDOM ("WIS"),
+    CHARISMA ("CHA");
 
     private String ability;
 
