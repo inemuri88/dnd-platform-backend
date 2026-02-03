@@ -9,9 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Entity
 @NoArgsConstructor
@@ -38,15 +36,20 @@ public class Race extends CreationUpdate {
         Se nella descrizione dell'abilità c'è una distanza per l'effetto
         allora verrà parsata nel service con un metodo apposito
      */
-    //crea una tabella con il nome della special skill e con la sua descrizione
+    /*
+     Crea una tabella con il nome della special skill e con la sua descrizione
+     quando si fa l'update hibernate elimina le righe riguardanti la razza da aggiornare
+     e le ricrea da capo, finché per ogni record di razza ci sono poche skill va bene
+    */
+
     @ElementCollection
     @CollectionTable(
             name = "race_racial_skills",
             joinColumns = @JoinColumn(name = "race_id")
     )
-    @MapKeyColumn(name = "skill_name")
+    @MapKeyColumn(name = "special_skill_name")
     @Column(name = "description")
-    private Map<String, String> racialSkills = new HashMap<>();
+    private Map<String, String> racialSpecialSkills = new HashMap<>();
 
     //come sopra, ma qui ho i modificatori razziali
     @ElementCollection
@@ -59,5 +62,20 @@ public class Race extends CreationUpdate {
     @Column(name = "modifier", nullable = false)
     private Map<AbilityScore, Integer> abilityModifiers = new EnumMap<>(AbilityScore.class);
 
-//TODO: aggiungere: classe preferita, bonus razziali su abilità
+    @ManyToMany
+    @JoinTable(
+            name = "prefer_classes_races",
+            joinColumns = @JoinColumn(name = "class"),
+            inverseJoinColumns = @JoinColumn(name = "race")
+    )
+    private Set<ClassCharacter> classes = new HashSet<>();
+
+    @ElementCollection
+    @CollectionTable(
+            name = "race_bonus_malus_skills",
+            joinColumns = @JoinColumn(name = "race_id")
+    )
+    @MapKeyColumn(name = "skill_name")
+    @Column(name = "bonus_malus")
+    private Map<String, Integer> racialBonusOrMalusSkills = new HashMap<>();
 }
