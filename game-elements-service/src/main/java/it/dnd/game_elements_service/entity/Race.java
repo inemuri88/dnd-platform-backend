@@ -11,6 +11,48 @@ import lombok.Setter;
 
 import java.util.*;
 
+/**
+ * Rappresenta una Razza giocabile (Race) in D&D 3.5.
+ *
+ * In D&D 3.5 la razza determina: taglia, velocità di movimento, modificatori
+ * alle caratteristiche, capacità speciali razziali, bonus/malus alle skill,
+ * lingue automatiche e bonus, e le classi "favorite" (preferred class).
+ *
+ * STRUTTURA DEI DATI:
+ *
+ * 1. CAPACITÀ SPECIALI RAZZIALI (racialSpecialSkills)
+ *    Map<String, String>: nome della capacità → descrizione testuale.
+ *    Es. "Darkvision" → "Can see in the dark up to 60 feet."
+ *    Usato @ElementCollection perché le capacità non sono entity autonome:
+ *    appartengono solo a questa razza e non hanno id proprio.
+ *    Genera la tabella "race_racial_skills" (race_id, special_skill_name, description).
+ *    NOTA: Hibernate gestisce gli update dell'ElementCollection eliminando
+ *    e ricreando tutte le righe della razza aggiornata. Accettabile finché
+ *    il numero di capacità per razza è contenuto (< 20 righe).
+ *
+ * 2. MODIFICATORI ALLE CARATTERISTICHE (abilityModifiers)
+ *    Map<AbilityScore, Integer>: caratteristica → valore del modificatore (positivo o negativo).
+ *    Es. AbilityScore.STRENGTH → +2, AbilityScore.INTELLIGENCE → -2.
+ *    Usa EnumMap per garantire ordine stabile e performance ottimale con chiavi enum.
+ *    Genera la tabella "race_ability_mod" (race_id, ability_score, modifier).
+ *
+ * 3. BONUS/MALUS ALLE SKILL (racialBonusOrMalusSkills)
+ *    Map<String, Integer>: nome della skill → bonus (positivo) o malus (negativo).
+ *    Es. "Listen" → +2, "Search" → +2.
+ *    Si usa il nome String invece dell'entity Skill per semplicità: queste sono
+ *    regole fisse del manuale, non richiedono validazione relazionale a DB.
+ *
+ * 4. CLASSI FAVORITE (classes)
+ *    @ManyToMany verso ClassCharacter: in D&D 3.5 ogni razza ha una o più classi
+ *    "favorite" che non generano penalità XP multiclasse. La join table si chiama
+ *    "prefer_classes_races". È il lato owning della relazione (ha la @JoinTable).
+ *
+ * 5. LINGUE → gestite tramite {@link it.dnd.game_elements_service.entity.relation.RaceLanguage}
+ *    (entity ponte Race + Language + tipo AUTOMATIC/BONUS).
+ *
+ * Estende CreationUpdate: le razze sono dati curati dall'amministratore che
+ * possono essere corretti nel tempo (createdAt + updatedAt tracciati).
+ */
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -25,23 +67,18 @@ public class Race extends CreationUpdate {
     @Column(nullable = false, unique = true)
     private String name;
 
+    // Velocità di movimento base in piedi (es. 30.0 per la maggior parte, 20.0 per nani)
     @Column(nullable = false)
     private Double speed;
 
+    // Taglia della creatura: influenza CA, attacco, gittata, Grapple, ecc.
     @Column(nullable = false)
     private CreatureSize size;
 
     /*
-    TODO:
-        Se nella descrizione dell'abilità c'è una distanza per l'effetto
-        allora verrà parsata nel service con un metodo apposito
+     * TODO: Se nella descrizione di una capacità speciale c'è una distanza
+     * (es. "Darkvision 60 ft."), il service la parserà con un metodo apposito.
      */
-    /*
-     Crea una tabella con il nome della special skill e con la sua descrizione
-     quando si fa l'update hibernate elimina le righe riguardanti la razza da aggiornare
-     e le ricrea da capo, finché per ogni record di razza ci sono poche skill va bene
-    */
-
     @ElementCollection
     @CollectionTable(
             name = "race_racial_skills",
@@ -51,7 +88,8 @@ public class Race extends CreationUpdate {
     @Column(name = "description")
     private Map<String, String> racialSpecialSkills = new HashMap<>();
 
-    //come sopra, ma qui ho i modificatori razziali
+    // Modificatori razziali alle 6 caratteristiche. Chiave = caratteristica, valore = delta.
+    // EnumMap mantiene l'ordine di dichiarazione dell'enum (STR, DEX, CON, INT, WIS, CHA).
     @ElementCollection
     @CollectionTable(
             name = "race_ability_mod",
@@ -62,6 +100,8 @@ public class Race extends CreationUpdate {
     @Column(name = "modifier", nullable = false)
     private Map<AbilityScore, Integer> abilityModifiers = new EnumMap<>(AbilityScore.class);
 
+    // Classi favorite: non generano penalità XP multiclasse per questa razza.
+    // Lato owning della relazione @ManyToMany (possiede la @JoinTable).
     @ManyToMany
     @JoinTable(
             name = "prefer_classes_races",
@@ -70,6 +110,8 @@ public class Race extends CreationUpdate {
     )
     private Set<ClassCharacter> classes = new HashSet<>();
 
+    // Bonus o malus razziali alle skill (nome skill → valore).
+    // Es. Elfo: Listen +2, Search +2, Spot +2. Halfling: Climb +2, Jump +2.
     @ElementCollection
     @CollectionTable(
             name = "race_bonus_malus_skills",
