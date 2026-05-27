@@ -1,26 +1,82 @@
 # D&D 3.5 Platform
 
-### Questo progetto punta a creare una piattaforma dove poter giocare insieme ad altre persone alla versione 3.5 di D&D, ci saranno mappe personalizzabili, chat di gruppo e singole, possibilità di creare le proprie campagne e generatori di npc casuali e tanto altro.
+Piattaforma per giocare online alla versione 3.5 di Dungeons & Dragons insieme ad altre persone.
+L'obiettivo è offrire: mappe personalizzabili, chat di gruppo e private, gestione delle campagne,
+creazione dei personaggi, generatori di NPC casuali e molto altro.
+
+---
 
 ## 🛠 Tecnologie
-- Java 21
-- Spring Boot 3
-- Spring Web (REST API)
-- Spring Data JPA
-- Hibernate (JPA provider)
-- Maven
-- MySQL / PostgreSQL
-- Docker
+
+### Backend
+| Tecnologia | Versione | Ruolo |
+|---|---|---|
+| Java | 21 | Linguaggio principale |
+| Spring Boot | 3.4.12 | Framework applicativo |
+| Spring Cloud | 2024.0.2 | Infrastruttura microservizi |
+| Spring Web | — | REST API |
+| Spring Data JPA + Hibernate | — | Persistenza dati (ORM) |
+| Spring Boot Validation | — | Validazione input |
+| Spring Boot Actuator | — | Health check ed endpoint di monitoraggio |
+| Spring Boot DevTools | — | Hot reload in sviluppo |
+| Spring Security | — | Autenticazione e autorizzazione (Gateway) |
+| Spring Cloud Gateway MVC | — | API Gateway (punto d'ingresso unico) |
+| Netflix Eureka | — | Service Discovery (registro dei microservizi) |
+| Micrometer + Prometheus | — | Metriche e monitoraggio |
+| MySQL | — | Database relazionale |
+| Lombok | — | Riduzione del boilerplate Java |
+| Maven | — | Build e gestione dipendenze |
+| Docker | — | Containerizzazione dei servizi |
+
+---
 
 ## 🧱 Architettura
 
-- Architettura a microservizi
-- Separazione per layer:
-  - Controller
-  - Service
-  - Repository
-  - Entity / DTO
-- Comunicazione REST
-- Naming e struttura orientate alla manutenibilità
+Il progetto segue un'**architettura a microservizi** con i seguenti moduli:
+
+| Modulo | Ruolo |
+|---|---|
+| `gateway` | Punto d'ingresso unico, routing, sicurezza |
+| `eureka` | Service Discovery: i servizi si registrano e si scoprono qui |
+| `game-elements-service` | Catalogo degli elementi di gioco: razze, classi, spell, feat, oggetti, skill |
+| `character-service` | Creazione e gestione dei personaggi |
+| `campaign-service` | Gestione delle campagne |
+| `chat-service` | Chat di gruppo e private |
+| `map-service` | Mappe personalizzabili |
+| `user-service` | Gestione degli utenti e dell'autenticazione |
+
+### Struttura interna di ogni servizio
+```
+controller/   →  REST endpoint
+service/      →  logica di business
+repository/   →  accesso al DB (Spring Data JPA)
+entity/       →  modello JPA (tabelle)
+dto/          →  oggetti di trasferimento dati (request/response)
+```
+
+### Comunicazione
+- I client esterni accedono esclusivamente tramite il **Gateway**
+- I microservizi si scoprono tra loro tramite **Eureka**
+- La comunicazione inter-servizio avviene via **REST**
+
+---
+
+## 🤖 Sviluppo assistito da AI
+
+Questo progetto viene sviluppato anche come percorso di apprendimento di **Claude Code**
+(l'agente AI di Anthropic), utilizzato tramite il plugin per **IntelliJ IDEA**.
+
+L'agente viene impiegato per attività come:
+- Completamento e documentazione delle entity JPA
+- Brainstorming sulle scelte architetturali
+- Revisione del codice
+
+Non tutto il codice è generato dall'agente: la progettazione, le decisioni architetturali
+e la scrittura manuale restano parte centrale del processo, con Claude Code usato come
+strumento di supporto e apprendimento.
+
+---
+
 ## 🚧 Stato del progetto
-In sviluppo
+
+In sviluppo attivo — fase di implementazione del layer entity e della struttura base dei microservizi.
