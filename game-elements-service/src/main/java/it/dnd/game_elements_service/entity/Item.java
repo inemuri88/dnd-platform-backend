@@ -43,6 +43,11 @@ import java.util.Objects;
  * equals/hashCode su id + name: permette di confrontare Item in Set o prima
  * della persistenza (quando id è ancora null). Coerente con Language.
  *
+ * CAMPO "specialMaterial":
+ * @ManyToOne opzionale verso {@link SpecialMaterial}. Null = acciaio/cuoio standard.
+ * Valorizzato = oggetto costruito con quel materiale (es. cold iron, adamantine).
+ * Il costGp dell'oggetto deve già includere il costo aggiuntivo del materiale.
+ *
  * Estende CreationUpdate: gli oggetti possono essere aggiornati dagli admin
  * (correzioni statistiche, nuovi oggetti, modifiche al costo).
  */
@@ -116,6 +121,11 @@ public class Item extends CreationUpdate {
 
     @Column(columnDefinition = "TEXT", nullable = false)
     private String description;
+
+    // Materiale speciale con cui è costruito l'oggetto. Null = materiale standard.
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "special_material_id")
+    private SpecialMaterial specialMaterial;
 
     @Override
     public boolean equals(Object o) {

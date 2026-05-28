@@ -173,12 +173,15 @@ public class ClassCharacter {
     // -------------------------------------------------------------------------
 
     // Es. Paladin: solo {LAWFUL_GOOD}. Barbarian: tutti esclusi quelli LAWFUL.
-    @ManyToMany
-    @JoinTable(
+    // @ElementCollection perché Alignment è un enum, non una @Entity:
+    // @ManyToMany richiede un target @Entity e causerebbe un'eccezione Hibernate.
+    @ElementCollection
+    @CollectionTable(
             name = "class_character_allowed_alignment",
-            joinColumns = @JoinColumn(name = "class_id"),
-            inverseJoinColumns = @JoinColumn(name = "alignment_id")
+            joinColumns = @JoinColumn(name = "class_id")
     )
+    @Enumerated(EnumType.STRING)
+    @Column(name = "alignment")
     private Set<Alignment> allowedAlignments = new HashSet<>();
 
     // -------------------------------------------------------------------------

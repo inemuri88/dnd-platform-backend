@@ -50,6 +50,16 @@ import java.util.*;
  * 5. LINGUE → gestite tramite {@link it.dnd.game_elements_service.entity.relation.RaceLanguage}
  *    (entity ponte Race + Language + tipo AUTOMATIC/BONUS).
  *
+ * 6. SOTTORAZE (parent / subRaces)
+ *    In D&D 3.5 molte razze hanno sottovarianti con statistiche diverse:
+ *    Es. Elf → High Elf, Wood Elf, Drow, Gray Elf, Wild Elf.
+ *    Si usa una relazione auto-referenziale: la sottoRaza punta alla razza
+ *    madre tramite "parent". La razza madre vede le sue sottoraze in "subRaces".
+ *    Le sottoraze sono entity Race a tutti gli effetti: hanno i propri
+ *    abilityModifiers, racialSpecialSkills, speed, ecc. che sovrascrivono o
+ *    integrano quelli della razza padre. La logica di merge è nel service.
+ *    Una Race con parent=null è una razza base; con parent valorizzato è una sottoRaza.
+ *
  * Estende CreationUpdate: le razze sono dati curati dall'amministratore che
  * possono essere corretti nel tempo (createdAt + updatedAt tracciati).
  */
@@ -120,4 +130,14 @@ public class Race extends CreationUpdate {
     @MapKeyColumn(name = "skill_name")
     @Column(name = "bonus_malus")
     private Map<String, Integer> racialBonusOrMalusSkills = new HashMap<>();
+
+    // Razza madre: null = razza base, valorizzato = sottoRaza (es. Elf → High Elf).
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_race_id")
+    private Race parent;
+
+    // Lato inverso: lista delle sottoraze di questa razza base.
+    // Utile per navigare da Elf a tutti i suoi tipi (High, Wood, Drow, ecc.).
+    @OneToMany(mappedBy = "parent")
+    private Set<Race> subRaces = new HashSet<>();
 }
