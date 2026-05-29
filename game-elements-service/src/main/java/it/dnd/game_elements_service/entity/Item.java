@@ -90,7 +90,7 @@ public class Item extends CreationUpdate {
     @Column
     private String critical;
 
-    // Gittata incrementale in piedi (es. 30 per shortbow). Null per armi da mischia.
+    // Gittata incrementale in metri (es. 9 per shortbow). Null per armi da mischia.
     @Column
     private Integer rangeIncrement;
 
@@ -115,7 +115,7 @@ public class Item extends CreationUpdate {
     @Column
     private Integer costGp;
 
-    // Peso in libbre. Usato per calcolare il carico portato dal personaggio.
+    // Peso in chilogrammi. Usato per calcolare il carico portato dal personaggio.
     @Column(nullable = false)
     private Double weight;
 

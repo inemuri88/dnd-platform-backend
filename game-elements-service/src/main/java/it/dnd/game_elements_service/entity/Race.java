@@ -22,7 +22,7 @@ import java.util.*;
  *
  * 1. CAPACITÀ SPECIALI RAZZIALI (racialSpecialSkills)
  *    Map<String, String>: nome della capacità → descrizione testuale.
- *    Es. "Darkvision" → "Can see in the dark up to 60 feet."
+ *    Es. "Darkvision" → "Can see in the dark up to 18 meters."
  *    Usato @ElementCollection perché le capacità non sono entity autonome:
  *    appartengono solo a questa razza e non hanno id proprio.
  *    Genera la tabella "race_racial_skills" (race_id, special_skill_name, description).
@@ -77,7 +77,7 @@ public class Race extends CreationUpdate {
     @Column(nullable = false, unique = true)
     private String name;
 
-    // Velocità di movimento base in piedi (es. 30.0 per la maggior parte, 20.0 per nani)
+    // Velocità di movimento base in metri (es. 9.0 per la maggior parte, 6.0 per nani)
     @Column(nullable = false)
     private Double speed;
 
@@ -87,7 +87,7 @@ public class Race extends CreationUpdate {
 
     /*
      * TODO: Se nella descrizione di una capacità speciale c'è una distanza
-     * (es. "Darkvision 60 ft."), il service la parserà con un metodo apposito.
+     * (es. "Darkvision 18 m."), il service la parserà con un metodo apposito.
      */
     @ElementCollection
     @CollectionTable(

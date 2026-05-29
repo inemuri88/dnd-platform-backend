@@ -120,7 +120,7 @@ public class Spell {
 
     // Gittata dell'effetto. In D&D 3.5 ha categorie standard ma anche valori
     // unici, quindi si usa String per flessibilità.
-    // es. "Personal", "Touch", "Close (25 ft. + 5 ft./2 levels)", "Long"
+    // es. "Personal", "Touch", "Close (7.5 m + 1.5 m/2 levels)", "Long"
     private String range;
 
     // --- Solo UNO tra i tre seguenti viene valorizzato per ogni spell ---
@@ -129,11 +129,11 @@ public class Spell {
     @Column(length = 500)
     private String target;
 
-    // Area: zona geometrica (es. "20-ft.-radius burst")
+    // Area: zona geometrica (es. "6-m-radius burst")
     @Column(length = 500)
     private String area;
 
-    // Effect: per spell che creano qualcosa (es. "Ray", "Wall of fire up to 20 ft.")
+    // Effect: per spell che creano qualcosa (es. "Ray", "Wall of fire up to 6 m")
     @Column(length = 500)
     private String effect;
 

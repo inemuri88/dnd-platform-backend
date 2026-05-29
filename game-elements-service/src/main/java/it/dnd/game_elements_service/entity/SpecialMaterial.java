@@ -54,8 +54,8 @@ public class SpecialMaterial {
     // Acciaio standard: 10. Adamantine: 20. Mithral: 15.
     private Integer hardness;
 
-    // Punti ferita per pollice di spessore dell'oggetto
-    private Integer hpPerInch;
+    // Punti ferita per centimetro di spessore dell'oggetto
+    private Integer hpPerCm;
 
     // Costo aggiuntivo in gp per costruire un'arma con questo materiale.
     // Es. Cold Iron: +2000 gp. Adamantine: +3000 gp. Null = non applicabile alle armi.
