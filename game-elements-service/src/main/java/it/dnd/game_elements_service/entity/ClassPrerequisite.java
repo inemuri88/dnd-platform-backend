@@ -1,5 +1,6 @@
 package it.dnd.game_elements_service.entity;
 
+import it.dnd.game_elements_service.entity.enumerate.PrerequisiteType;
 import jakarta.persistence.*;
 
 /**
@@ -35,8 +36,12 @@ public class ClassPrerequisite {
     @JoinColumn(name = "class_id")
     private ClassCharacter classCharacter;
 
-    // Categoria del requisito: "BAB", "SKILL", "FEAT", "ALIGNMENT", "CASTER_LEVEL", "RACE"
-    private String type;
+    // Categoria del requisito (BAB, SKILL, FEAT, ALIGNMENT, CASTER_LEVEL, RACE).
+    // FIX: prima era una String libera (nessun controllo sui valori ammessi, rischio
+    // di typo nel seed data). Ora è l'enum PrerequisiteType, mappato come STRING per
+    // leggibilità e robustezza al riordino dei valori.
+    @Enumerated(EnumType.STRING)
+    private PrerequisiteType type;
 
     // Target qualitativo: nome feat, nome skill, codice allineamento, ecc. Null se numerico puro.
     private String value;

@@ -82,6 +82,11 @@ public class Race extends CreationUpdate {
     private Double speed;
 
     // Taglia della creatura: influenza CA, attacco, gittata, Grapple, ecc.
+    // FIX: aggiunto @Enumerated(EnumType.STRING). Prima mancava del tutto, quindi
+    // JPA applicava il default EnumType.ORDINAL, salvando la taglia come intero
+    // (0,1,2…). Era fragile (riordinare l'enum CreatureSize avrebbe corrotto i dati
+    // esistenti) e incoerente con tutti gli altri enum del progetto, mappati come STRING.
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private CreatureSize size;
 
@@ -112,11 +117,16 @@ public class Race extends CreationUpdate {
 
     // Classi favorite: non generano penalità XP multiclasse per questa razza.
     // Lato owning della relazione @ManyToMany (possiede la @JoinTable).
+    // FIX: corretti i nomi delle colonne della join table, prima invertiti.
+    // joinColumns è il lato owning (Race), inverseJoinColumns è il target (ClassCharacter):
+    // prima la FK verso Race si chiamava "class" e quella verso ClassCharacter "race"
+    // (scambiate e fuorvianti a schema; "class" è anche un nome di colonna problematico).
+    // Ora sono race_id (owning = Race) e class_id (target = ClassCharacter).
     @ManyToMany
     @JoinTable(
             name = "prefer_classes_races",
-            joinColumns = @JoinColumn(name = "class"),
-            inverseJoinColumns = @JoinColumn(name = "race")
+            joinColumns = @JoinColumn(name = "race_id"),
+            inverseJoinColumns = @JoinColumn(name = "class_id")
     )
     private Set<ClassCharacter> classes = new HashSet<>();
 

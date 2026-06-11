@@ -1,5 +1,6 @@
 package it.dnd.game_elements_service.entity;
 
+import it.dnd.game_elements_service.entity.enumerate.PrerequisiteType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -46,9 +47,12 @@ public class FeatPrerequisite {
     @JoinColumn(name = "feat_id", nullable = false)
     private Feat feat;
 
-    // Categoria del prerequisito: "BAB", "FEAT", "SKILL", "ABILITY",
-    // "CASTER_LEVEL", "ALIGNMENT", "RACE"
-    private String type;
+    // Categoria del prerequisito (BAB, FEAT, SKILL, ABILITY, CASTER_LEVEL, ALIGNMENT, RACE).
+    // FIX: prima era una String libera (nessun controllo sui valori ammessi, rischio
+    // di typo nel seed data). Ora è l'enum PrerequisiteType, mappato come STRING per
+    // leggibilità e robustezza al riordino dei valori.
+    @Enumerated(EnumType.STRING)
+    private PrerequisiteType type;
 
     // Valore qualitativo: nome del feat richiesto, nome dell'abilità, ecc.
     // Null per i requisiti puramente numerici (es. BAB).
