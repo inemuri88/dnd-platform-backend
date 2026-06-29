@@ -87,6 +87,13 @@ fabric.properties
 # BlueJ files
 *.ctxt
 
+# Variabili d'ambiente: contengono segreti (credenziali DB, JWT_SECRET, ...). NON committare.
+# I file *.env.example (template senza segreti) restano invece versionati.
+.env
+**/.env
+!*.env.example
+!**/*.env.example
+
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
 

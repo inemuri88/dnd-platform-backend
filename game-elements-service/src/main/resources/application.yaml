@@ -1,3 +1,50 @@
+server:
+  port: 8082
+
 spring:
   application:
     name: game-elements-service
+
+  datasource:
+    url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      # ATTENZIONE: qui usiamo ancora 'update' perche' lo schema (decine di entita': Race, Spell, Class...)
+      # e' tuttora in evoluzione e non ha una baseline Flyway. 'update' fa generare/aggiornare le tabelle a Hibernate.
+      #
+      # WORKFLOW PER PASSARE A FLYWAY (quando lo schema si stabilizza, vedi README sezione Flyway):
+      #   1) generare lo script DDL della baseline (es. con hibernate.hbm2ddl o un dump del DB gia' creato da 'update')
+      #   2) salvarlo in src/main/resources/db/migration/V1__baseline.sql
+      #   3) impostare ddl-auto: validate e spring.flyway.enabled: true
+      # Da quel momento ogni modifica di schema si fa con un nuovo file V2__..., V3__... (mai a mano sul DB).
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+    open-in-view: false
+
+  # Disabilitato finche' non esiste la migration di baseline (vedi nota sopra).
+  flyway:
+    enabled: false
+
+# Solo validazione dei JWT in arrivo: la chiave HMAC deve essere identica a quella dello user-service che li firma.
+security:
+  jwt:
+    secret: ${JWT_SECRET}
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka/}
+  instance:
+    prefer-ip-address: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info

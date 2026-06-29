@@ -1,3 +1,55 @@
+server:
+  port: 8081
+
 spring:
   application:
     name: user-service
+
+  # --- Database MySQL dedicato a questo servizio (un DB per microservizio) ---
+  datasource:
+    # createDatabaseIfNotExist=true crea lo schema vuoto al primo avvio in locale;
+    # useSSL=false e allowPublicKeyRetrieval=true evitano i tipici errori di handshake con MySQL 8 in dev.
+    url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      # 'validate': Hibernate NON modifica lo schema (lo crea/aggiorna Flyway).
+      # All'avvio controlla solo che le entita' Java combacino con le tabelle reali: se divergono, fallisce subito.
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: true
+    # Disattiviamo l'Open-Session-In-View: e' una best practice che evita query lazy "nascoste" nel layer web.
+    open-in-view: false
+
+  # --- Flyway: all'avvio applica in ordine gli script SQL in src/main/resources/db/migration ---
+  flyway:
+    enabled: true
+    # Se il DB esiste gia' con dati ma senza la tabella di storico Flyway, ne crea una baseline invece di fallire.
+    baseline-on-migrate: true
+
+# --- Parametri per la firma/emissione dei JWT (chiave HMAC condivisa con gli altri servizi) ---
+security:
+  jwt:
+    # Segreto HMAC: valorizzato dal file .env (min 32 byte per HS256). Nessun default per non versionarlo.
+    secret: ${JWT_SECRET}
+    # Durata del token di accesso, in secondi (default: 1 ora)
+    expiration-seconds: ${JWT_EXPIRATION:3600}
+    issuer: dnd-platform
+
+# --- Registrazione presso Eureka ---
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka/}
+  instance:
+    prefer-ip-address: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
