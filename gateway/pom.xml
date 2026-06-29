@@ -82,6 +82,18 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+			<!-- Surefire: esegue gli unit test. Carica Mockito come -javaagent per mockare
+			     classi/record final senza il self-attach (deprecato nelle JDK future).
+			     Il path punta a ${settings.localRepository} (la cartella ~/.m2) e usa
+			     ${mockito.version} ereditata dal parent Spring Boot: niente versione
+			     hardcodata e nessun plugin extra da scaricare. -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<argLine>-javaagent:${settings.localRepository}/org/mockito/mockito-core/${mockito.version}/mockito-core-${mockito.version}.jar -Xshare:off</argLine>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 
