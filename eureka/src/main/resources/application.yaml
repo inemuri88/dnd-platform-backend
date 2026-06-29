@@ -1,3 +1,25 @@
+server:
+  # Porta standard de-facto per un Eureka server; tutti i client puntano qui
+  port: 8761
+
 spring:
   application:
     name: eureka
+
+eureka:
+  client:
+    # Eureka e' il registro stesso: non deve registrarsi presso di se' ne' scaricare il registro da altri
+    register-with-eureka: false
+    fetch-registry: false
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  server:
+    # In sviluppo conviene disattivare la self-preservation per veder sparire subito i servizi spenti.
+    # In produzione va RIATTIVATA (true) per evitare che cali di rete deregistrino istanze sane.
+    enable-self-preservation: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
