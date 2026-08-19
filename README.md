@@ -77,6 +77,54 @@ strumento di supporto e apprendimento.
 
 ---
 
+## Compilazione di game-elements-service
+
+Questa sezione permette a un nuovo sviluppatore di compilare `game-elements-service`
+con la toolchain scelta dal progetto e individuare il JAR prodotto.
+
+### Prerequisiti
+
+- JDK 21, verificabile con:
+
+  ```powershell
+  java --version
+  ```
+
+### Comando di compilazione
+
+Dalla directory `game-elements-service` eseguire:
+
+  ```powershell
+  .\mvnw.cmd clean package -DskipTests
+  ```
+
+Al termine, Maven deve mostrare `BUILD SUCCESS`.
+
+Rimanendo nella stessa directory, il JAR eseguibile viene creato in:
+
+  ```text
+  target/game-elements-service-0.0.1-SNAPSHOT.jar
+  ```
+
+Il file con suffisso `.jar.original` è l'artefatto precedente alla riorganizzazione
+eseguita dal plugin Spring Boot.
+
+### Limiti della verifica
+
+Questa procedura verifica la compilazione e la creazione del JAR, ma non avvia
+l'applicazione né verifica la connessione al database.
+
+### Configurazione runtime osservata
+
+La configurazione attuale prevede:
+
+- un'istanza MySQL raggiungibile tramite `DB_HOST`, `DB_PORT`, `DB_NAME`,
+  `DB_USER` e `DB_PASSWORD`;
+- la porta applicativa `8082`.
+
+MySQL può essere eseguito localmente oppure in un container. Docker non è necessario
+per la compilazione e il repository non fornisce ancora un file Docker Compose.
+
 ## 🚧 Stato del progetto
 
 In sviluppo attivo — fase di implementazione del layer entity e della struttura base dei microservizi.

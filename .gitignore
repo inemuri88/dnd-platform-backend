@@ -121,3 +121,10 @@ buildNumber.properties
 .project
 # JDT-specific (Eclipse Java Development Tools)
 .classpath
+
+### Local agent and learning workspace
+/AGENTS.md
+/APPUNTI.md
+/TASKS.md
+/docs/learning/
+/tasks/
