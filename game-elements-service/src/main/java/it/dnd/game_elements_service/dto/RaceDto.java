@@ -64,7 +64,7 @@ public record RaceDto(
         // nome della razza madre, comodo per la UI senza dover fare un'altra query.
         String parentName,
 
-        // --- CICLO 1, verso tenuto pieno: le sottoraze come FOGLIE ---
+        // --- CICLO 1, verso tenuto pieno: le sottorazze come FOGLIE ---
 
         // Le sottoraze come riepiloghi: RaceSummaryDto non ha subRaces/parent,
         // quindi la catena si ferma a un livello e non torna mai indietro.

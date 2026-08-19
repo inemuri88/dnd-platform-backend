@@ -100,7 +100,7 @@ public class RaceService {
     }
 
     /**
-     * Variante che elenca SOLO le razze base (senza le sottoraze), sfruttando
+     * Variante che elenca SOLO le razze base (senza le sottorazze), sfruttando
      * la query derivata del repository. Mostra come la logica di "quali dati
      * leggere" sta nel repository, mentre la logica di "come presentarli" (DTO)
      * sta qui nel service.
