@@ -114,16 +114,48 @@ eseguita dal plugin Spring Boot.
 Questa procedura verifica la compilazione e la creazione del JAR, ma non avvia
 l'applicazione né verifica la connessione al database.
 
-### Configurazione runtime osservata
+### Configurazione runtime di game-elements-service
 
-La configurazione attuale prevede:
+Il servizio usa due profili Spring:
 
-- un'istanza MySQL raggiungibile tramite `DB_HOST`, `DB_PORT`, `DB_NAME`,
-  `DB_USER` e `DB_PASSWORD`;
-- la porta applicativa `8082`.
+- `local`: valori di riserva per host, porta e nome del database, porta HTTP `8082` ed Eureka
+  disabilitato;
+- `prod`: host, porte e nome del database devono essere forniti esplicitamente dall'ambiente.
 
-MySQL può essere eseguito localmente oppure in un container. Docker non è necessario
-per la compilazione e il repository non fornisce ancora un file Docker Compose.
+Username e password non hanno valori di riserva. I nomi delle variabili disponibili sono
+documentati in `game-elements-service/.env.example`; il file `.env` reale è locale e ignorato da
+Git. Spring Boot non carica automaticamente `.env`: deve essere la shell, IntelliJ o il futuro
+Docker Compose a esportare le variabili nel processo Java.
+
+#### Avvio da PowerShell
+
+Dalla directory `game-elements-service`:
+
+```powershell
+$env:SPRING_PROFILES_ACTIVE='local'
+$env:GAME_ELEMENTS_DB_USER='utente-locale'
+$env:GAME_ELEMENTS_DB_PASSWORD='password-locale'
+.\mvnw.cmd spring-boot:run
+```
+
+I valori impostati in questo modo valgono soltanto nella sessione PowerShell corrente e nei
+processi avviati da essa.
+
+#### Avvio da IntelliJ IDEA
+
+Nella Run Configuration di `GameElementsServiceApplication` aggiungere le environment variables
+`SPRING_PROFILES_ACTIVE=local`, `GAME_ELEMENTS_DB_USER` e `GAME_ELEMENTS_DB_PASSWORD`. Le altre
+variabili `GAME_ELEMENTS_*` possono essere omesse per usare i valori locali di riserva descritti in
+`.env.example`.
+
+#### Futuro avvio con Docker Compose
+
+Il repository non contiene ancora un file Docker Compose. Quando verrà introdotto, sarà Compose a
+leggere `.env` o un file indicato con `env_file` e a passare le variabili al container. La sola
+copia di `.env.example` in `.env` non rende i valori disponibili a Spring Boot.
+
+La configurazione non è ancora conclusa: GES-002 resta in corso finché non saranno verificati il
+fail-fast sulle credenziali mancanti, l'avvio con valori validi e i relativi smoke check manuali.
 
 ## 🚧 Stato del progetto
 
