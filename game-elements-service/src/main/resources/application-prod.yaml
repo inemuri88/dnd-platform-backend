@@ -1,0 +1,9 @@
+spring:
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    url: jdbc:mysql://${GAME_ELEMENTS_DB_HOST}:${GAME_ELEMENTS_DB_PORT}/${GAME_ELEMENTS_DB_NAME}
+
+server:
+  port: ${GAME_ELEMENTS_SERVER_PORT}

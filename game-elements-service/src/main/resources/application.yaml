@@ -2,13 +2,13 @@ spring:
   application:
     name: game-elements-service
   datasource:
-    url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}
-    username: ${DB_USER}
-    password: ${DB_PASSWORD}
+    username: ${GAME_ELEMENTS_DB_USER}
+    password: ${GAME_ELEMENTS_DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
       ddl-auto: update
+  lifecycle:
+    timeout-per-shutdown-phase: 30s # Tempo massimo concesso a ogni fase di arresto
 server:
-  port: 8082
-
+  shutdown: graceful # Consente alle richieste in corso di terminare entro il timeout
