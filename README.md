@@ -61,19 +61,30 @@ dto/          →  oggetti di trasferimento dati (request/response)
 
 ---
 
-## 🤖 Sviluppo assistito da AI
+## 🤖 Sviluppo e percorso formativo assistiti da AI
 
-Questo progetto viene sviluppato anche come percorso di apprendimento di **Claude Code**
-(l'agente AI di Anthropic), utilizzato tramite il plugin per **IntelliJ IDEA**.
+Il progetto viene sviluppato con il supporto sia di **Claude Code** sia di **OpenAI Codex**.
+Gli agenti operano come collaboratori tecnici, senior mentor e reviewer, in base al tipo di
+attività.
 
-L'agente viene impiegato per attività come:
-- Completamento e documentazione delle entity JPA
-- Brainstorming sulle scelte architetturali
-- Revisione del codice
+Vengono impiegati soprattutto per:
 
-Non tutto il codice è generato dall'agente: la progettazione, le decisioni architetturali
-e la scrittura manuale restano parte centrale del processo, con Claude Code usato come
-strumento di supporto e apprendimento.
+- analizzare requisiti e codice esistente;
+- discutere alternative architetturali e relativi compromessi;
+- assegnare micro-task formativi e fornire indizi progressivi;
+- effettuare code review e aiutare nella diagnosi di errori, log e query;
+- implementare modifiche circoscritte quando vengono delegate esplicitamente;
+- verificare build, comportamento osservabile e criteri di accettazione.
+
+Lo sviluppatore mantiene la responsabilità delle decisioni e dell'apprendimento. Nei task
+formativi scrive normalmente l'implementazione e deve saper spiegare flusso, responsabilità,
+rischi e verifiche. Un agente può produrre direttamente codice soltanto quando la delega è
+esplicita e limitata a uno specifico perimetro.
+
+Il lavoro procede attraverso un solo micro-passo alla volta. I task non vengono considerati
+conclusi finché i criteri di accettazione non sono stati realmente verificati; particolare
+attenzione viene dedicata a configurazione Spring, persistenza JPA, transazioni, API REST,
+sicurezza e debugging sistematico.
 
 ---
 
